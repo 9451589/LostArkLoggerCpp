@@ -1,5 +1,5 @@
 #include "headers/handle_KeyExchangeServer.hpp"
-#include "../data/encryption_manager.hpp"
+#include "../data/encryption_data.hpp"
 #include "../decompressor.hpp"
 #include "../reader.hpp"
 #include "../steam_opcodes.hpp"
@@ -7,7 +7,6 @@
 #include <print>
 #include <span>
 
-#include <ranges>
 #include <snappy.h>
 #include <sodium.h>
 

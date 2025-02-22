@@ -10,7 +10,7 @@
 #include "loa_reassembly.hpp"
 #include "parser.hpp"
 #include "sniffer.hpp"
-#include "data/encryption_manager.hpp"
+#include "data/encryption_data.hpp"
 
 // Global for now
 const app::Decompressor decompressor;

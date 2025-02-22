@@ -1,5 +1,5 @@
 #include "headers/handle_KeyExchangeClient.hpp"
-#include "../data/encryption_manager.hpp"
+#include "../data/encryption_data.hpp"
 #include "../decompressor.hpp"
 
 #include <print>
@@ -24,7 +24,7 @@ void handle_KeyExchangeClient(std::span<uint8_t> tcp_payload)
     // 2. if packet constains key
     uint32_t key_len{};
     std::memcpy(&key_len, data.data() + 16, sizeof(key_len)); // skip 16 bytes counter + random
-    if (key_len > 0)
+    if (key_len == 32)
     {
         // save clients pubkey
         std::memcpy(encdata.c_pubkey.data(), data.data() + 16 + 4, key_len);
