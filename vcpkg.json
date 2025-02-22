@@ -1,0 +1,8 @@
+{
+  "dependencies": [
+    "nlohmann-json",
+    "pcapplusplus",
+    "snappy",
+    "libsodium"
+  ]
+}
