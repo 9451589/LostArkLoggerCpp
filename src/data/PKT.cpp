@@ -29,6 +29,17 @@ void PKT::print()
     std::println();
 }
 
+void PKT::print2()
+{
+    auto chunks = decompressed() | std::views::chunk(32);
+
+    for (const auto chunk : chunks | std::views::take(1))
+        std::println("{:04X}:   {:n:02X}", opcode(), chunk);
+
+    for (const auto chunk : chunks | std::views::drop(1))
+            std::println("\t{:n:02X}", chunk);
+}
+
 std::vector<uint8_t>& PKT::decompressed()
 {
     if (decompressed_.empty())

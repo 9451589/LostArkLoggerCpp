@@ -27,6 +27,7 @@ class PKT
     PKT(uint8_t* data, uint16_t len, uint16_t opcode, uint8_t enc, uint8_t compression, const Decompressor* d);
 
     void print();
+    void print2();
 
     std::vector<uint8_t>& decompressed();
 

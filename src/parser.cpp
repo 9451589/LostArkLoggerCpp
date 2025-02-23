@@ -12,7 +12,7 @@ namespace app
 
 void Parser::HandleGamePacket(PKT pkt)
 {
-    /*pkt.print();*/
+    pkt.print2();
 
     switch ((opcodes)pkt.opcode())
     {

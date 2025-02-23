@@ -4,6 +4,9 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+set(VCPKG_LIBRARY_LINKAGE static)
+set(VCPKG_TRACE_FIND_PACKAGE ON)
+
 project(cppLogger LANGUAGES C CXX)
 
 find_package(nlohmann_json CONFIG REQUIRED)
@@ -30,6 +33,7 @@ include_directories(cppLogger PRIVATE
 target_compile_definitions(cppLogger PRIVATE _CONSOLE _UNICODE UNICODE SODIUM_STATIC)
 
 target_compile_options(cppLogger PRIVATE
+    /std:c++latest
     /W4
     /permissive-
     /external:anglebrackets

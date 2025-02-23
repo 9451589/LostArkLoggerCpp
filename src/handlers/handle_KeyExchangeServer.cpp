@@ -10,7 +10,7 @@
 #include <snappy.h>
 #include <sodium.h>
 
-const app::Decompressor decompressor;
+extern const app::Decompressor decompressor;
 extern app::EncryptionData encdata;
 
 namespace app

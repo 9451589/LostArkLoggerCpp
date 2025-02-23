@@ -11,6 +11,8 @@
       "hidden": true,
       "binaryDir": "${sourceDir}/out/build/${presetName}",
       "cacheVariables": {
+        "VCPKG_OVERLAY_TRIPLETS": "${sourceDir}/custom-triplets",
+        "VCPKG_TARGET_TRIPLET": "x64-windows-static-custom",
         "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/${presetName}",
         "CMAKE_TOOLCHAIN_FILE": {
           "type": "FILEPATH",
