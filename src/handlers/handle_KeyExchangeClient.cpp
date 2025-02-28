@@ -23,14 +23,14 @@ void handle_KeyExchangeClient(std::span<uint8_t> tcp_payload)
 
     // 2. if packet constains key
     uint32_t key_len{};
-    std::memcpy(&key_len, data.data() + 16, sizeof(key_len)); // skip 16 bytes counter + random
+    std::memcpy(&key_len, data.data() + 16 + 2, sizeof(key_len)); // skip 16 bytes counter + random
     if (key_len == 32)
     {
         // save clients pubkey
-        std::memcpy(encdata.c_pubkey.data(), data.data() + 16 + 4, key_len);
+        std::memcpy(encdata.c_pubkey.data(), data.data() + 16 + 2 + 4, key_len);
 
         // overwrite with our pubkey
-        std::memcpy(data.data() + 16 + 4, encdata.my_pk.data(), key_len);
+        std::memcpy(data.data() + 16 + 2 + 4, encdata.my_pk.data(), key_len);
 
         // re-encrypt (xor)
         decompressor.Cipher(data, 1);

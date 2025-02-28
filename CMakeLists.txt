@@ -4,9 +4,6 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(VCPKG_LIBRARY_LINKAGE static)
-set(VCPKG_TRACE_FIND_PACKAGE ON)
-
 project(cppLogger LANGUAGES C CXX)
 
 find_package(nlohmann_json CONFIG REQUIRED)
@@ -14,7 +11,7 @@ find_package(pcapplusplus CONFIG REQUIRED)
 find_package(snappy CONFIG REQUIRED)
 find_package(unofficial-sodium CONFIG REQUIRED)
 
-add_executable(cppLogger
+add_executable(${PROJECT_NAME}
     src/main.cpp
     src/sniffer.cpp
     src/parser.cpp
@@ -25,24 +22,24 @@ add_executable(cppLogger
     src/handlers/handle_KeyExchangeServer.cpp
 )
 
-include_directories(cppLogger PRIVATE
+include_directories(${PROJECT_NAME} PRIVATE
     F:/lib/oodle
     F:/lib/WinDivert-2.2.2-A/include
 )
 
-target_compile_definitions(cppLogger PRIVATE _CONSOLE _UNICODE UNICODE SODIUM_STATIC)
+target_compile_definitions(${PROJECT_NAME} PRIVATE _CONSOLE _UNICODE UNICODE SODIUM_STATIC)
 
-target_compile_options(cppLogger PRIVATE
-    /std:c++latest
+target_compile_options(${PROJECT_NAME} PRIVATE
+    /EHsc
     /W4
     /permissive-
     /external:anglebrackets
     /external:W0
 )
 
-target_link_options(cppLogger PRIVATE /MACHINE:X64 /SUBSYSTEM:CONSOLE)
+target_link_options(${PROJECT_NAME} PRIVATE /MACHINE:X64 /SUBSYSTEM:CONSOLE)
 
-target_link_libraries(cppLogger PRIVATE
+target_link_libraries(${PROJECT_NAME} PRIVATE
     F:/lib/oodle/lib/oo2net_win64.lib
     F:/lib/WinDivert-2.2.2-A/x64/WinDivert.lib
     unofficial-sodium::sodium

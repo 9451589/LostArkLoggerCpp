@@ -19,12 +19,11 @@ namespace app
 // TODO: dump this packet's parser from exe
 void handle_KeyExchangeServer(std::span<uint8_t> tcp_payload)
 {
-    // this packet contains multiple smaller packets, get length from loa header
+    // this packet contains multiple smaller packets, get length of first packet
     uint16_t packet_len{};
     std::memcpy(&packet_len, tcp_payload.data(), sizeof(packet_len));
 
-    // make a copy of tcp_payload, if contains pubkey we do our stuff
-    // and overwrite the original with copy otherwise we send original
+    // make a copy of tcp_payload
     std::vector<uint8_t> data(tcp_payload.begin() + 8, tcp_payload.begin() + packet_len);
 
     // 1. decrypt (xor)
@@ -32,21 +31,20 @@ void handle_KeyExchangeServer(std::span<uint8_t> tcp_payload)
     decompressor.Cipher(data, (uint32_t)PKTKeyExchangeServer);
 
     // 2. snappy decompress packet
-    std::string decompressed;
-    snappy::Uncompress(reinterpret_cast<char*>(data.data()), data.size(), &decompressed);
+    std::string decomp;
+    snappy::Uncompress(reinterpret_cast<char*>(data.data()), data.size(), &decomp);
 
     // 3. save server pubkey, nonce, and msg
     auto message = encdata.message.data();
     auto nonce = encdata.nonce.data();
 
-    std::span<uint8_t> decomp_span(reinterpret_cast<uint8_t*>(decompressed.data()), decompressed.size());
-    app::BitReader reader(decomp_span);
+    app::BitReader reader(std::span<uint8_t>(reinterpret_cast<uint8_t*>(decomp.data()), decomp.size()));
 
     reader.skip(16);
-    reader.memcpy_(nonce, reader.u32());
-    reader.memcpy_(message, reader.u32());
-    reader.skip(2);
     reader.memcpy_(encdata.s_pubkey.data(), reader.u32());
+    reader.skip(2);
+    reader.memcpy_(message, reader.u32());
+    reader.memcpy_(nonce, reader.u32());
 
     // 3. decrypt message
     if (crypto_box_open_easy(message, message, 56, nonce, encdata.s_pubkey.data(), encdata.my_sk.data()) == 0)
@@ -68,12 +66,12 @@ void handle_KeyExchangeServer(std::span<uint8_t> tcp_payload)
             std::println("crypto_box_easy error");
 
         // modify packet copy, send my pubkey and re encrypted msg
-        std::memcpy(decompressed.data() + 16 + 4 + 24 + 4, message, 56);                           // msg
-        std::memcpy(decompressed.data() + 16 + 4 + 24 + 4 + 56 + 2 + 4, encdata.my_pk.data(), 32); // my pubkey
+        std::memcpy(decomp.data() + 16 + 4 + 32 + 2 + 4, message, 56); // msg
+        std::memcpy(decomp.data() + 16 + 4, encdata.my_pk.data(), 32); // my pubkey
 
         // re compress packet
         std::string recompressed;
-        snappy::Compress(reinterpret_cast<char*>(decompressed.data()), decompressed.size(), &recompressed);
+        snappy::Compress(reinterpret_cast<char*>(decomp.data()), decomp.size(), &recompressed);
 
         // check if re compressed size == original compressed size
         // if different we bail, send original un modified packet

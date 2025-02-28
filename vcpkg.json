@@ -1,4 +1,4 @@
-{C:\Source\cpp\LostArkLoggerCpp\out\build\ninja-release
+{
   "dependencies": [
     "nlohmann-json",
     "pcapplusplus",
